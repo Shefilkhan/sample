@@ -69,7 +69,7 @@ int main(void) {
             choice = 0;//this function stops unexpected actions, reset the choice
             continue;
         }
-        // this function performs operations beased on users input
+               // this function performs operations beased on users input
         switch (choice) {
         case 1:
             calculateClassAverage(students, studentCount);
@@ -101,3 +101,25 @@ int main(void) {
 
     return EXIT_SUCCESS;
 }
+// this function reads data from an input data and displays an array of students records
+int readData(FILE* fp, struct Student* students, int maxStudents) {
+    char buffer[BUFFER_SIZE];//this function is for temporary buffer for reading files
+    int i = 0;
+
+    while (i < maxStudents && fgets(buffer, sizeof(buffer), fp)) {
+        if (sscanf_s(buffer, "%d", &students[i].id) != 1) break; //this function analyze students ID
+
+        //this function read and store students name
+        if (!fgets(buffer, sizeof(buffer), fp)) break;
+        buffer[strcspn(buffer, "\n")] = '\0';  // this function removes newline character
+        strncpy_s(students[i].name, sizeof(students[i].name), buffer, _TRUNCATE);
+
+        // this function read and store students grade
+        if (!fgets(buffer, sizeof(buffer), fp)) break;
+        if (sscanf_s(buffer, "%d", &students[i].grade) != 1) break;
+
+        i++;//this is increment for the record count 
+    }
+    return i;//this function returns the number of records read 
+}
+
