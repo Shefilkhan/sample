@@ -122,4 +122,52 @@ int readData(FILE* fp, struct Student* students, int maxStudents) {
     }
     return i;//this function returns the number of records read 
 }
+// this function calculates and display the class average
+void calculateClassAverage(const struct Student* students, int count) {
+    int sum = 0;//this function is collector for grades 
+    for (int i = 0; i < count; i++) {
+        sum += students[i].grade;
+    }
+    printf("Class Average: %.2f\n", count > 0 ? (float)sum / count : 0.0);
+}
 
+// this function is to sort records by grade in ascending order
+void sortRecords(struct Student* students, int count) {
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = i + 1; j < count; j++) {
+            if (students[i].grade > students[j].grade) {
+                struct Student temp = students[i];//this is temporary variable for swapping
+                students[i] = students[j];
+                students[j] = temp;
+            }
+        }
+    }
+}
+
+// this function is to filter and display records above a grade threshold
+void filterRecords(const struct Student* students, int count, int threshold) {
+    printf("Records with grades above %d:\n", threshold);
+    for (int i = 0; i < count; i++) {
+        if (students[i].grade > threshold) {
+            printf("%d %s %d\n", students[i].id, students[i].name, students[i].grade);
+        }
+    }
+}
+
+// this function is to write students records for a specific output file
+void writeDataToFile(const char* filepath, const struct Student* students, int count) {
+    FILE* file;
+    file = fopen("input.txt", "w");//this function opens file in the mentioned path
+    if (file == NULL) {
+        perror("Error opening file");//this function handle file error
+        return;
+    }
+
+    //this function write each students details 
+    for (int i = 0; i < count; i++) {
+        fprintf(file, "%d %s %d\n", students[i].id, students[i].name, students[i].grade);
+    }
+    //this function close the file after writing 
+    fclose(file);
+    printf("Data successfully written to %s.\n", filepath);
+}
